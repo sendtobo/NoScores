@@ -47,11 +47,13 @@ struct ContentView: View {
                     Section("Games") {
                         ForEach(games) { game in
                             GameView(game: game)
+                                .alignmentGuide(.listRowSeparatorLeading){ _ in 0 }
                         }
                     }
                 }
             }
             .onAppear(perform: {
+                date = .now
                 loadGames()
             })
             .onChange(of: date) { _, _ in
@@ -87,11 +89,14 @@ struct GameView: View {
         VStack {
             HStack {
                 TeamView(team: awayTeam)
-                Text("at")
-                    .frame(maxWidth: .infinity)
+                Spacer().frame(width: .infinity)
+                VStack {
+                    Text(game.startTime.formatted(date: .omitted, time: .shortened))
+                }
+                .fixedSize()
+                Spacer().frame(width: .infinity)
                 TeamView(team: homeTeam)
             }
-            Text(game.startTime.formatted(date: .omitted, time: .shortened))
         }
     }
 }
@@ -102,10 +107,11 @@ struct TeamView: View {
         VStack {
             Image(team.rawValue)
                 .resizable()
+                .scaledToFit()
                 .frame(width: 60, height: 40)
                 .aspectRatio(contentMode: .fit)
             Text(team.name)
-
+                .font(.caption)
         }
         .frame(maxWidth: .infinity)
     }
